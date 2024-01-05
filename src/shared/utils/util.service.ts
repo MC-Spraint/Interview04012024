@@ -108,4 +108,18 @@ export class UtilService {
       return res;
     }
   }
+  public successResponse<T>(
+    sucRes: SuccessResponse,
+    message: string,
+    data: T,
+    extra?: IPaginator,
+  ): commonSuccessResponse<T> {
+    return this.customSuccessResponse<T>(
+      BookingStatuskMap.get(sucRes) as SuccessResponseCode,
+      sucRes,
+      message,
+      data,
+      extra,
+    );
+  }
 }
