@@ -108,42 +108,4 @@ export class UtilService {
       return res;
     }
   }
-  public successResponse<T>(
-    sucRes: SuccessResponse,
-    message: string,
-    data: T,
-    extra?: IPaginator,
-  ): commonSuccessResponse<T> {
-    return this.customSuccessResponse<T>(
-      BookingStatuskMap.get(sucRes) as SuccessResponseCode,
-      sucRes,
-      message,
-      data,
-      extra,
-    );
-  }
-  //Existing = E, transformed = T
-  public filter<E>(arr: E[], condition: (element: E) => boolean): E[] {
-    if (arr.length == 0) return [];
-    const [head, ...tail] = arr;
-    if (condition(head)) return [head, ...this.filter(tail, condition)];
-    return this.filter(tail, condition);
-  }
-  public map<E, T>(arr: E[], condition: (element: E) => T): T[] {
-    if (arr.length == 0) return [];
-    const [head, ...tail] = arr;
-    return [condition(head), ...this.map(tail, condition)];
-  }
-  public some<E>(arr: E[], condition: (element: E) => boolean): boolean {
-    if (arr.length == 0) return false;
-    const [head, ...tail] = arr;
-    if (condition(head)) return true;
-    return this.some(tail, condition);
-  }
-  public every<E>(arr: E[], condition: (element: E) => boolean): boolean {
-    if (arr.length == 0) return true;
-    const [head, ...tail] = arr;
-    if (condition(head)) return this.every(tail, condition);
-    return false;
-  }
 }
