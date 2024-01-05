@@ -1,0 +1,15 @@
+Error: property item_discount_percentages should not exist - Name: BadRequestException - Message: property item_discount_percentages should not exist
+Status code: 400 - Method: POST - Path: /api/invoices/5b50744a-5fe5-4f93-88f7-ce85a7b17366/items
+
+                        {"status":"Error","response_code":400,"response":"property item_discount_percentages should not exist","error":"property item_discount_percentages should not exist","name":"BadRequestException","message":"property item_discount_percentages should not exist","data":null,"path":"/api/invoices/5b50744a-5fe5-4f93-88f7-ce85a7b17366/items","method":"POST","timestamp":"2024-01-05T04:37:45.782Z"}
+
+                        BadRequestException: property item_discount_percentages should not exist
+    at ValidationPipe.exceptionFactory (C:\Users\mcspr\McSpraint\myapps\ownapps\interview\interview-projet\src\shared\config\config.pipe.ts:23:12)
+    at ValidationPipe.transform (C:\Users\mcspr\McSpraint\myapps\ownapps\interview\interview-projet\node_modules\@nestjs\common\pipes\validation.pipe.js:72:30)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at resolveParamValue (C:\Users\mcspr\McSpraint\myapps\ownapps\interview\interview-projet\node_modules\@nestjs\core\router\router-execution-context.js:147:23)
+    at async Promise.all (index 1)
+    at pipesFn (C:\Users\mcspr\McSpraint\myapps\ownapps\interview\interview-projet\node_modules\@nestjs\core\router\router-execution-context.js:150:13)
+    at C:\Users\mcspr\McSpraint\myapps\ownapps\interview\interview-projet\node_modules\@nestjs\core\router\router-execution-context.js:37:30
+    at C:\Users\mcspr\McSpraint\myapps\ownapps\interview\interview-projet\node_modules\@nestjs\core\router\router-execution-context.js:46:28
+    at C:\Users\mcspr\McSpraint\myapps\ownapps\interview\interview-projet\node_modules\@nestjs\core\router\router-proxy.js:9:17

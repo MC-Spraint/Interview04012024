@@ -9,7 +9,7 @@ import {
 import { HttpAdapterHost } from '@nestjs/core';
 import { Request, Response } from 'express';
 import * as fs from 'fs';
-import { ResponseType } from '../utils/dtos/response-type.enum';
+import { ResponseType } from '../../utils/dtos/response-type.enum';
 import { CustomHttpExceptionResponse } from './interfaces/ICustomHttpExceptionResponse';
 import { HttpExceptionResponse } from './interfaces/IHttpExceptionResponse';
 
@@ -19,69 +19,44 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
 
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
-  catch(exception: HttpException, host: ArgumentsHost): Response {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
-
-    try {
-      const { status, error_name, errorMessage, message } =
-        this.handleHttpException(exception);
-
-      const errorResponse = this.getErrorResponse(
-        status,
-        error_name,
-        errorMessage,
-        message,
-        request,
-      );
-
-      this.logError(errorResponse, request, exception);
-      this.writeErrorLogToFile(errorResponse);
-
-      return response.status(status).json(errorResponse);
-    } catch (error) {
-      this.logger.error(`Error while processing exception: ${error}`);
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        status: ResponseType.ERROR,
-        response_code: HttpStatus.INTERNAL_SERVER_ERROR,
-        response: 'Internal Server Error',
-        error: 'INTERNAL_SERVER_ERROR',
-        name: 'InternalServerError',
-        message: 'Internal Server Error',
-        data: null,
-        path: request.url,
-        method: request.method,
-        timestamp: new Date(),
-      });
-    }
-  }
-
-  // ...
-
-  private handleHttpException(exception: HttpException) {
+  catch(
+    exception: HttpException,
+    host: ArgumentsHost,
+  ): Response<unknown, Record<string, unknown>> {
     let status: HttpStatus;
     const error_name: string = exception.name;
     let message: string;
     let errorMessage: string;
 
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+
     if (exception instanceof HttpException) {
       // Handle Http exception
       status = exception.getStatus();
-      message = exception.getResponse()?.toString() || 'Internal Server Error';
+      message = exception['message'];
       const errorResponse = exception.getResponse();
-      errorMessage = (errorResponse as HttpExceptionResponse)?.error || message;
+      errorMessage =
+        (errorResponse as HttpExceptionResponse).error || exception.message;
     } else {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = 'Internal Server Error';
+      message = exception['message'];
       errorMessage = 'CRITICAL_INTERNAL_SERVER_ERROR';
     }
 
-    return { status, error_name, errorMessage, message };
+    const errorResponse = this.getErrorResponse(
+      status,
+      error_name,
+      errorMessage,
+      message,
+      request,
+    );
+    const errorLog = this.logError(errorResponse, request, exception); //First log the exception
+    this.writeErrorLogToFile(errorLog); // Log the errors in a file
+
+    return response.status(status).json(errorResponse); // Second display the exception
   }
-
-  // ...
-
   private getErrorResponse(
     status_code: HttpStatus,
     error_name: string,
@@ -102,12 +77,11 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
       timestamp: new Date(),
     };
   }
-
   private logError(
     errorResponse: CustomHttpExceptionResponse<null>,
     request: Request,
     exception: HttpException,
-  ): void {
+  ): string {
     const { response_code, error, message } = errorResponse;
     const { method, path } = request;
     const errorLog = `Error: ${error} - Name: ${
@@ -119,18 +93,12 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
                             ? exception.stack
                             : exception
                         }`;
-
     this.logger.error(errorLog);
+    return errorLog;
   }
-
-  private writeErrorLogToFile(
-    errorResponse: CustomHttpExceptionResponse<null>,
-  ): void {
-    const errorLog = `${JSON.stringify(errorResponse)}\n`;
+  private writeErrorLogToFile(errorLog: string): void {
     fs.appendFile('error.log', errorLog, 'utf8', (err) => {
-      if (err) {
-        this.logger.error(`Error writing to error.log: ${err}`);
-      }
+      if (err) throw err;
     });
   }
 }
