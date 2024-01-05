@@ -6,7 +6,7 @@ import { VALIDATION_PIPE } from './shared/config/config.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.useGlobalPipes(VALIDATION_PIPE);
+  app.useGlobalPipes(VALIDATION_PIPE);
   app.setGlobalPrefix('api');
   SwaggerModule.setup('api', app, createDocument(app));
 

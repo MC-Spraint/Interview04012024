@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, IsUUID, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CommonResponse } from 'src/shared/utils/dtos/common-response';
 
@@ -28,7 +28,7 @@ export class AddItemDto {
   @ApiProperty({})
   @IsString()
   @IsUUID()
-  @IsNotEmpty()
+  @IsOptional()
   invoice_id: string;
 }
 //Response data transfer object
