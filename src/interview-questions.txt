@@ -1,0 +1,21 @@
+API:
+1.Create an Invoice:
+ input -  Client Name, Date.
+ return: invoice_id.
+
+2.Add Invoice Item:
+input- invoice_id, item_name, item_qty, item_rate, item_discount_percentage.
+Return:
+  - Updated Invoice {_id, client_name, date, total_amount, items: [{
+item_id, item_name, item_qty, item_discount_percentage, item_discount_amount, item_amount}]}
+
+3.Remove Invoice Item:
+input - Invoice_id, item_id
+Return: Updated Invoice
+
+4.fetch Invoices:
+input - page=0, pagesize=2
+Return Invoices (as per detail above) // Correction: Page cannot be 0, minimum shoudl be 1
+
+5. Summary API
+Return: Array: [date, invoice_count, item_count, total_discount_value, total_amount.]
