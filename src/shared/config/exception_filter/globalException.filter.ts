@@ -52,8 +52,8 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
       message,
       request,
     );
-    const errorLog = this.logError(errorResponse, request, exception); //First log the exception
-    this.writeErrorLogToFile(errorLog); // Log the errors in a file
+    this.logError(errorResponse, request, exception); //First log the exception
+    this.writeErrorLogToFile(errorResponse); // Log the errors in a file
 
     return response.status(status).json(errorResponse); // Second display the exception
   }
@@ -96,9 +96,20 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
     this.logger.error(errorLog);
     return errorLog;
   }
-  private writeErrorLogToFile(errorLog: string): void {
-    fs.appendFile('error.log', errorLog, 'utf8', (err) => {
-      if (err) throw err;
+  private writeErrorLogToFile(
+    errorResponse: CustomHttpExceptionResponse<null>,
+  ): void {
+    const errorLog = `${JSON.stringify(errorResponse)}\n`;
+    const logFilePath = `${__dirname}/error.log`;
+
+    console.log('Writing to file:', logFilePath); // Add this line for debugging
+
+    fs.appendFile(logFilePath, errorLog, 'utf8', (err) => {
+      if (err) {
+        this.logger.error(`Error writing to error.log: ${err}`);
+      } else {
+        console.log('Write successful!'); // Add this line for debugging
+      }
     });
   }
 }
