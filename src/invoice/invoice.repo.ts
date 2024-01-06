@@ -15,7 +15,7 @@ export class InvoiceRepository {
 
   public async insertInvoice(
     client_name: string,
-    date: Date,
+    date: string,
   ): Promise<Partial<Invoice>> {
     const data = { client_name, date };
     const parameters = [...Object.values(data)];

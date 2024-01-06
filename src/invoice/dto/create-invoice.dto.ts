@@ -17,9 +17,9 @@ export class CreateInvoiceDto {
   client_name: string;
 
   @ApiProperty({})
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  date: Date;
+  date: string;
 }
 //Response data transfer object
 export class CreateInvoiceResponse extends CommonResponse {

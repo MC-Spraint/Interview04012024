@@ -19,7 +19,7 @@ export const databaseProviders = [
         database: configService.get(EnvVariable.POSTGRES_DB as string),
         user: configService.get(EnvVariable.PGUSER as string),
         password: configService.get(EnvVariable.PGPASSWORD as string),
-        port: parseInt(configService.get(EnvVariable.PGPORT as string), 10),
+        port: parseInt(configService.get(EnvVariable.PGPORT), 10),
       });
 
       try {
